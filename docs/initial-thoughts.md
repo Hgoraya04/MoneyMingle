@@ -1,6 +1,6 @@
 # Initial Thoughts & Ideas
 
-Early product thinking for MoneyMingle, written down before any code exists so decisions are deliberate rather than accidental. Treat this as a living document — update it as ideas change.
+Converting my own personal savings tracking spreadsheet to a working website to be used by everyone.
 
 ## The Core Idea
 
@@ -12,8 +12,6 @@ The spreadsheet already proves the concept: track savings goals, track the accou
 
 ## Data Model Sketch
 
-A rough first pass at the entities, based directly on the spreadsheet's columns. This will get refined once the database is actually designed, but it's a useful starting point:
-
 - **User** — id, email, hashed password, created_at
 - **Account** — id, user_id, name (e.g. "AMEX", "Apple"), previous_balance, current_balance
 - **Goal** — id, user_id, name, target_amount, target_date, accomplished (boolean)
@@ -23,7 +21,7 @@ Everything the spreadsheet calculates with formulas — saved-so-far, remaining,
 
 Reallocations (moving money between goals or accounts) stay as **two linked transactions** — a withdrawal and a deposit — exactly like the spreadsheet's macro does it. That keeps the ledger balanced and avoids needing a separate "transfer" concept.
 
-## Dashboard — the part worth getting right
+## Dashboard
 
 This is explicitly the piece to spend the most design time on before writing code. Some starting questions to think through:
 
@@ -32,11 +30,8 @@ This is explicitly the piece to spend the most design time on before writing cod
 - How much of the "zero-based budgeting" feel (every dollar assigned somewhere) should the UI enforce vs. just report?
 - Mobile-friendly from day one, since a future app will reuse the same design language.
 
-Worth sketching a few layout options (even rough wireframes) before committing to a frontend structure.
 
 ## MVP Scope (Web)
-
-Keep the first version close to what the spreadsheet already does — resist adding scope beyond it:
 
 - Sign up / log in
 - Create/edit/delete goals and accounts

@@ -75,8 +75,6 @@ For a personal savings tracker, running out of space on the free tier is very un
 - 0.5 GB of storage comfortably holds **hundreds of thousands of transactions** — years of daily use, even with many users.
 - The tables here (users, accounts, goals, transactions) are small and text/number-heavy — no images, files, or large blobs planned, which is what actually eats up storage quickly.
 
-More detail, including what to avoid so storage stays small, is in [`docs/database-notes.md`](docs/database-notes.md).
-
 ## Roadmap
 
 1. ~~Document the existing spreadsheet~~ ✅
@@ -91,6 +89,5 @@ More detail, including what to avoid so storage stays small, is in [`docs/databa
 ## Documentation
 
 - [`docs/Spreadsheet Documentation Updated.pdf`](docs/Spreadsheet%20Documentation%20Updated.pdf) — cleaned-up, professionally formatted documentation of how the original spreadsheet works
-- [`docs/initial-thoughts.md`](docs/initial-thoughts.md) — early product thinking, data model sketch, and open questions
-- [`docs/database-notes.md`](docs/database-notes.md) — Neon setup notes and free-tier guidance
+- [`docs/initial-thoughts.md`](docs/initial-thoughts.md) — early product thinking and data model sketch
 - [`docs/source-material/`](docs/source-material/) — original spreadsheet documentation and reference material

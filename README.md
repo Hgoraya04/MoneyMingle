@@ -12,7 +12,6 @@ A personal savings tracker web app — turning a Google Sheets workflow into a r
 - [Project Structure](#project-structure)
 - [Database & Hosting](#database--hosting)
 - [Roadmap](#roadmap)
-- [Documentation](#documentation)
 
 ## Overview
 
@@ -27,7 +26,7 @@ A native/mobile app is a possible future direction once the web version is solid
 
 ## Core Features
 
-Derived directly from how the spreadsheet works today (see [full documentation](docs/Spreadsheet%20Documentation%20Updated.pdf)):
+Derived directly from how the original spreadsheet works:
 
 | Feature | Description |
 |---|---|
@@ -55,7 +54,7 @@ These are starting defaults, not locked-in decisions — flag anything you'd rat
 MoneyMingle/
 ├── frontend/     React application (dashboard, goals, accounts, transaction log UI)
 ├── backend/      Express API (auth, goals, accounts, transactions, calculations)
-├── docs/         Project documentation, planning notes, and original spreadsheet reference
+├── docs/         Local-only planning notes and design references (not tracked in git)
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -85,9 +84,3 @@ For a personal savings tracker, running out of space on the free tier is very un
 6. Build the frontend
 7. Deploy (frontend + backend hosting TBD, database on Neon)
 8. Stretch goal: mobile app
-
-## Documentation
-
-- [`docs/Spreadsheet Documentation Updated.pdf`](docs/Spreadsheet%20Documentation%20Updated.pdf) — cleaned-up, professionally formatted documentation of how the original spreadsheet works
-- [`docs/initial-thoughts.md`](docs/initial-thoughts.md) — early product thinking and data model sketch
-- [`docs/source-material/`](docs/source-material/) — original spreadsheet documentation and reference material

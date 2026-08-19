@@ -33,5 +33,5 @@ coverage/
 # Prisma
 backend/prisma/*.db
 
-# Personal financial data — local reference only, never committed
-docs/source-material/sample-data-screenshot.pdf
+# Project docs — kept local only, never pushed
+docs/

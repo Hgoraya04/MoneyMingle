@@ -25,7 +25,7 @@ export function NewAccountPage() {
 
   return (
     <div className="mm-view mm-formwrap">
-      <h2 style={{ fontSize: 19, margin: "18px 0 16px" }}>Add account</h2>
+      <h2 style={{ fontSize: "var(--mm-h2)", margin: "18px 0 16px" }}>Add account</h2>
 
       <form onSubmit={handleSubmit}>
         {error && <p className="mm-formerror">{error}</p>}

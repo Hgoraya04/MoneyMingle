@@ -145,7 +145,7 @@ export function WithdrawPage() {
 
   return (
     <div className="mm-view mm-formwrap">
-      <h2 style={{ fontSize: 19, margin: "18px 0 16px" }}>Log withdrawal</h2>
+      <h2 style={{ fontSize: "var(--mm-h2)", margin: "18px 0 16px" }}>Log withdrawal</h2>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
         <div className="mm-field" style={{ flex: 1, marginBottom: 0 }}>

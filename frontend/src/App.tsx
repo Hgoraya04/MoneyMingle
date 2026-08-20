@@ -8,6 +8,7 @@ import { DashboardPage } from "./pages/DashboardPage";
 import { WithdrawPage } from "./pages/WithdrawPage";
 import { NewGoalPage } from "./pages/NewGoalPage";
 import { NewAccountPage } from "./pages/NewAccountPage";
+import { TransferPage } from "./pages/TransferPage";
 
 export function App() {
   return (
@@ -22,6 +23,7 @@ export function App() {
               <Route path="/withdraw" element={<WithdrawPage />} />
               <Route path="/goals/new" element={<NewGoalPage />} />
               <Route path="/accounts/new" element={<NewAccountPage />} />
+              <Route path="/transfer" element={<TransferPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

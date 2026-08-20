@@ -39,7 +39,7 @@ export function DashboardPage() {
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", margin: "18px 0 16px", flexWrap: "wrap", gap: 8 }}>
         <div>
           <p style={{ fontSize: 12.5, color: "var(--mm-text2)", margin: "0 0 2px" }}>Good to see you, {user?.name}</p>
-          <h2 style={{ fontSize: 19 }}>Your savings overview</h2>
+          <h2 style={{ fontSize: "var(--mm-h2)" }}>Your savings overview</h2>
         </div>
         <Link to="/withdraw" className="mm-primary" style={{ width: "auto", padding: "0 14px", display: "flex", alignItems: "center", gap: 6, textDecoration: "none" }}>
           <svg className="icon" style={{ stroke: "var(--mm-on-brand)" }}>
@@ -105,7 +105,7 @@ export function DashboardPage() {
             <div className="mm-track">
               <div className="mm-fill" style={{ width: `${Math.min(100, pct)}%`, background: color }} />
             </div>
-            <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished ? 10 : 0 }}>
+            <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished || goals.length > 1 ? 10 : 0 }}>
               <span className="tabular">
                 {money(goal.savedSoFar)} of {money(goal.targetAmount)}
               </span>
@@ -114,14 +114,24 @@ export function DashboardPage() {
                 {goal.monthlyTarget && parseFloat(goal.monthlyTarget) > 0 && ` · ${money(goal.monthlyTarget)}/mo`}
               </span>
             </div>
-            {goal.accomplished && (
-              <Link to={`/withdraw?goalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
-                <svg className="icon" style={{ width: 13, height: 13 }}>
-                  <use href="#i-arrow-down" />
-                </svg>
-                Withdraw remaining funds
-              </Link>
-            )}
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {goal.accomplished && (
+                <Link to={`/withdraw?goalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
+                  <svg className="icon" style={{ width: 13, height: 13 }}>
+                    <use href="#i-arrow-down" />
+                  </svg>
+                  Withdraw remaining funds
+                </Link>
+              )}
+              {goals.length > 1 && (
+                <Link to={`/transfer?fromGoalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
+                  <svg className="icon" style={{ width: 13, height: 13 }}>
+                    <use href="#i-exchange" />
+                  </svg>
+                  Transfer to another goal
+                </Link>
+              )}
+            </div>
           </div>
         );
       })}

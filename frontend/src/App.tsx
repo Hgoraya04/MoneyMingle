@@ -6,6 +6,8 @@ import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthPage } from "./pages/AuthPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { WithdrawPage } from "./pages/WithdrawPage";
+import { NewGoalPage } from "./pages/NewGoalPage";
+import { NewAccountPage } from "./pages/NewAccountPage";
 
 export function App() {
   return (
@@ -18,6 +20,8 @@ export function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/withdraw" element={<WithdrawPage />} />
+              <Route path="/goals/new" element={<NewGoalPage />} />
+              <Route path="/accounts/new" element={<NewAccountPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

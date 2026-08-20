@@ -6,8 +6,14 @@ import type { AccountSummary, Dashboard, GoalSummary } from "../lib/types";
 
 type Line = { goalId: string; amount: string; reduceGoalAmount: boolean | null };
 
+// Local calendar date, not UTC — toISOString() can land on the wrong day
+// near midnight depending on the viewer's timezone.
 function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 export function WithdrawPage() {
@@ -138,7 +144,7 @@ export function WithdrawPage() {
   }
 
   return (
-    <div className="mm-view">
+    <div className="mm-view mm-formwrap">
       <h2 style={{ fontSize: 19, margin: "18px 0 16px" }}>Log withdrawal</h2>
 
       <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>

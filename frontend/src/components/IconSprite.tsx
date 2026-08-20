@@ -70,6 +70,10 @@ export function IconSprite() {
           <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
           <path d="M9 12l2 2 4-4.5" />
         </symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24">
+          <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3" />
+          <path d="M13 8l5 4-5 4M18 12H9" />
+        </symbol>
       </defs>
     </svg>
   );

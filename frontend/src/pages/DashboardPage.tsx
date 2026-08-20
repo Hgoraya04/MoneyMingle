@@ -68,7 +68,18 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <p className="mm-sectionlabel">Goals</p>
+      <div className="mm-dashgrid">
+      <div className="mm-dash-main">
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <p className="mm-sectionlabel">Goals</p>
+        <Link to="/goals/new" className="mm-link" style={{ marginBottom: 9, textDecoration: "none" }}>
+          <svg className="icon">
+            <use href="#i-plus" />
+          </svg>
+          Add goal
+        </Link>
+      </div>
       {goals.length === 0 && <p className="mm-empty">No goals yet.</p>}
       {goals.map((goal, i) => {
         const pct = Math.round(goal.percentComplete);
@@ -115,9 +126,19 @@ export function DashboardPage() {
         );
       })}
 
-      <p className="mm-sectionlabel" style={{ marginTop: 20 }}>
-        Accounts
-      </p>
+      </div>
+
+      <div className="mm-dash-side">
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        <p className="mm-sectionlabel">Accounts</p>
+        <Link to="/accounts/new" className="mm-link" style={{ marginBottom: 9, textDecoration: "none" }}>
+          <svg className="icon">
+            <use href="#i-plus" />
+          </svg>
+          Add
+        </Link>
+      </div>
       {accounts.length === 0 && <p className="mm-empty">No accounts yet.</p>}
       <div className="mm-accounts">
         {accounts.map((account) => (
@@ -172,6 +193,9 @@ export function DashboardPage() {
         </>
       )}
 
+      </div>
+
+      <div className="mm-dash-full">
       <p className="mm-sectionlabel">Recent transactions</p>
       {transactions.length === 0 ? (
         <p className="mm-empty">No transactions logged yet.</p>
@@ -205,6 +229,9 @@ export function DashboardPage() {
           })}
         </div>
       )}
+      </div>
+
+      </div>
     </div>
   );
 }

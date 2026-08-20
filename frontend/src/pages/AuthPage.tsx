@@ -34,8 +34,8 @@ export function AuthPage() {
   }
 
   return (
-    <div className="mm-shell">
-      <div className="mm-content mm-view">
+    <div className="mm-authshell">
+      <div className="mm-view">
         <div className="mm-auth-hero">
           <div className="blob" aria-hidden="true" />
           <h1>{mode === "signin" ? "Welcome back" : "Start saving with a plan"}</h1>

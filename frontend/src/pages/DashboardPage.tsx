@@ -128,8 +128,10 @@ export function DashboardPage() {
             </div>
             {keptWithdrawn > 0.004 && (
               <p className="mm-goal-note">
-                {money(keptWithdrawn)} of the {money(goal.totalWithdrawn)} withdrawn was spent on the goal itself, so it didn't reduce
-                progress.
+                {keptWithdrawn >= parseFloat(goal.totalWithdrawn) - 0.004
+                  ? `All of the ${money(goal.totalWithdrawn)} withdrawn was`
+                  : `${money(keptWithdrawn)} of the ${money(goal.totalWithdrawn)} withdrawn was`}{" "}
+                spent on the goal itself, so it didn't reduce progress.
               </p>
             )}
             <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished || goals.length > 1 ? 10 : 0 }}>

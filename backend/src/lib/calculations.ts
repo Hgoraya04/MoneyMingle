@@ -74,7 +74,7 @@ export async function getDashboard(userId: string) {
     prisma.goal.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
     prisma.account.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
     prisma.transaction.groupBy({
-      by: ["goalId", "type", "reduceGoalAmount"],
+      by: ["goalId", "type", "reduceGoalAmount", "isReallocation"],
       where: { userId },
       _sum: { amount: true },
     }),
@@ -107,7 +107,10 @@ export async function getDashboard(userId: string) {
       availableToWithdrawByGoal.set(row.goalId, cash.minus(sum));
     }
 
-    if (row.type === "WITHDRAWAL") {
+    // "Withdrawn" means cash that actually left an account — a reallocation's
+    // withdrawal leg doesn't count, since that money is still sitting in the
+    // same account, just relabeled onto a different goal.
+    if (row.type === "WITHDRAWAL" && !row.isReallocation) {
       totalWithdrawnByGoal.set(row.goalId, (totalWithdrawnByGoal.get(row.goalId) ?? ZERO).plus(sum));
     }
   }

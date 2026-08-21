@@ -70,6 +70,14 @@ model Transaction {
   // Always null for deposits.
   reduceGoalAmount Boolean?
 
+  // True for both legs of a reallocation (POST /transactions/reallocate).
+  // The cash never leaves its account — it's the same dollars, just
+  // relabeled from one goal to another — so these are excluded from
+  // "Withdrawn" totals, which are meant to reflect money actually leaving
+  // an account. They still count toward availableToWithdraw/savedSoFar,
+  // since the source goal's allocation genuinely does go down.
+  isReallocation Boolean @default(false)
+
   createdAt DateTime @default(now())
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)

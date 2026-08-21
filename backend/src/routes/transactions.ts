@@ -177,6 +177,7 @@ transactionsRouter.post(
           description: `Reallocation to ${toGoal.name}${suffix}`,
           type: "WITHDRAWAL",
           reduceGoalAmount: true,
+          isReallocation: true,
         },
       }),
       prisma.transaction.create({
@@ -186,6 +187,7 @@ transactionsRouter.post(
           accountId,
           amount,
           date,
+          isReallocation: true,
           description: `Reallocation from ${fromGoal.name}${suffix}`,
           type: "DEPOSIT",
         },

@@ -84,10 +84,7 @@ export function DashboardPage() {
       {goals.map((goal, i) => {
         const pct = Math.round(goal.percentComplete);
         const color = goalColor(i);
-        // Saved so far only drops for "Yes, reduce" withdrawals, so it and
-        // Left to withdraw can diverge — this is exactly the gap made up of
-        // "No, keep" withdrawals (spent on the goal, progress untouched).
-        const keptWithdrawn = parseFloat(goal.savedSoFar) - parseFloat(goal.availableToWithdraw);
+        const canWithdraw = parseFloat(goal.availableToWithdraw) > 0.004;
         return (
           <div className="mm-goal" key={goal.id}>
             <div className="mm-goal-top">
@@ -126,28 +123,27 @@ export function DashboardPage() {
                 <p className="mm-goal-stat-value tabular">{money(goal.availableToWithdraw)}</p>
               </div>
             </div>
-            {keptWithdrawn > 0.004 && (
-              <p className="mm-goal-note">
-                {keptWithdrawn >= parseFloat(goal.totalWithdrawn) - 0.004
-                  ? `All of the ${money(goal.totalWithdrawn)} withdrawn was`
-                  : `${money(keptWithdrawn)} of the ${money(goal.totalWithdrawn)} withdrawn was`}{" "}
-                spent on the goal itself, so it didn't reduce progress.
-              </p>
-            )}
-            <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished || goals.length > 1 ? 10 : 0 }}>
+            <div className="mm-goal-meta" style={{ marginBottom: 10 }}>
               <span>
                 {goal.targetDate && monthYear(goal.targetDate)}
                 {goal.monthlyTarget && parseFloat(goal.monthlyTarget) > 0 && ` · ${money(goal.monthlyTarget)}/mo`}
               </span>
             </div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {goal.accomplished && (
+              {canWithdraw ? (
                 <Link to={`/withdraw?goalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
                   <svg className="icon" style={{ width: 13, height: 13 }}>
                     <use href="#i-arrow-down" />
                   </svg>
-                  Withdraw remaining funds
+                  Withdraw funds
                 </Link>
+              ) : (
+                <button type="button" className="mm-ghostbtn" disabled title="No more available to withdraw" style={{ width: "fit-content" }}>
+                  <svg className="icon" style={{ width: 13, height: 13 }}>
+                    <use href="#i-arrow-down" />
+                  </svg>
+                  Withdraw funds
+                </button>
               )}
               {goals.length > 1 && (
                 <Link to={`/transfer?fromGoalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>

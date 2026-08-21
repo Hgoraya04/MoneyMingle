@@ -11,6 +11,7 @@ export type GoalSummary = {
   targetDate: Date | null;
   accomplished: boolean;
   savedSoFar: Prisma.Decimal;
+  totalWithdrawn: Prisma.Decimal;
   availableToWithdraw: Prisma.Decimal;
   remaining: Prisma.Decimal;
   percentComplete: number;
@@ -86,6 +87,7 @@ export async function getDashboard(userId: string) {
 
   const savedSoFarByGoal = new Map<string, Prisma.Decimal>();
   const availableToWithdrawByGoal = new Map<string, Prisma.Decimal>();
+  const totalWithdrawnByGoal = new Map<string, Prisma.Decimal>();
   for (const row of byGoal) {
     const sum = row._sum.amount ?? ZERO;
 
@@ -103,6 +105,10 @@ export async function getDashboard(userId: string) {
       availableToWithdrawByGoal.set(row.goalId, cash.plus(sum));
     } else if (row.type === "WITHDRAWAL") {
       availableToWithdrawByGoal.set(row.goalId, cash.minus(sum));
+    }
+
+    if (row.type === "WITHDRAWAL") {
+      totalWithdrawnByGoal.set(row.goalId, (totalWithdrawnByGoal.get(row.goalId) ?? ZERO).plus(sum));
     }
   }
 
@@ -132,7 +138,11 @@ export async function getDashboard(userId: string) {
     if (goal.targetDate) {
       const msLeft = goal.targetDate.getTime() - now.getTime();
       monthsLeft = msLeft / (1000 * 60 * 60 * 24 * AVG_DAYS_PER_MONTH);
-      monthlyTarget = monthsLeft > 0 ? remaining.div(monthsLeft) : remaining;
+      // Dividing by less than a month (or a passed date) inflates the monthly
+      // figure past the goal itself — "you need $15k/mo for a $5k goal" makes
+      // no sense. Floor the divisor at 1 month: with under a month left (or
+      // overdue), the "monthly" target is just what's left, once.
+      monthlyTarget = remaining.div(Math.max(monthsLeft, 1));
     }
 
     return {
@@ -142,6 +152,7 @@ export async function getDashboard(userId: string) {
       targetDate: goal.targetDate,
       accomplished: goal.accomplished,
       savedSoFar,
+      totalWithdrawn: totalWithdrawnByGoal.get(goal.id) ?? ZERO,
       availableToWithdraw: availableToWithdrawByGoal.get(goal.id) ?? ZERO,
       remaining,
       percentComplete,

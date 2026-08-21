@@ -522,6 +522,33 @@ a {
   height: 100%;
   border-radius: 4px;
 }
+.mm-goal-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  background: var(--mm-surface);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+.mm-goal-stat-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--mm-muted);
+  margin: 0 0 3px;
+}
+.mm-goal-stat-value {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mm-text);
+  margin: 0;
+}
+.mm-goal-stat-of {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--mm-muted);
+}
 .mm-goal-meta {
   display: flex;
   justify-content: space-between;
@@ -848,6 +875,20 @@ a {
     margin-bottom: 12px;
   }
   .mm-goal-meta {
+    font-size: 13px;
+  }
+  .mm-goal-stats {
+    padding: 14px 16px;
+    gap: 14px;
+    border-radius: 12px;
+  }
+  .mm-goal-stat-label {
+    font-size: 12px;
+  }
+  .mm-goal-stat-value {
+    font-size: 16px;
+  }
+  .mm-goal-stat-of {
     font-size: 13px;
   }
   .mm-badge {

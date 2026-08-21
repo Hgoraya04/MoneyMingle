@@ -105,10 +105,24 @@ export function DashboardPage() {
             <div className="mm-track">
               <div className="mm-fill" style={{ width: `${Math.min(100, pct)}%`, background: color }} />
             </div>
+            <div className="mm-goal-stats">
+              <div>
+                <p className="mm-goal-stat-label">Saved so far</p>
+                <p className="mm-goal-stat-value tabular">
+                  {money(goal.savedSoFar)}
+                  <span className="mm-goal-stat-of"> of {money(goal.targetAmount)}</span>
+                </p>
+              </div>
+              <div>
+                <p className="mm-goal-stat-label">Withdrawn</p>
+                <p className="mm-goal-stat-value tabular">{money(goal.totalWithdrawn)}</p>
+              </div>
+              <div>
+                <p className="mm-goal-stat-label">Left to withdraw</p>
+                <p className="mm-goal-stat-value tabular">{money(goal.availableToWithdraw)}</p>
+              </div>
+            </div>
             <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished || goals.length > 1 ? 10 : 0 }}>
-              <span className="tabular">
-                {money(goal.savedSoFar)} of {money(goal.targetAmount)}
-              </span>
               <span>
                 {goal.targetDate && monthYear(goal.targetDate)}
                 {goal.monthlyTarget && parseFloat(goal.monthlyTarget) > 0 && ` · ${money(goal.monthlyTarget)}/mo`}

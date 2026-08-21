@@ -556,6 +556,12 @@ a {
   color: var(--mm-muted);
   gap: 8px;
 }
+.mm-goal-note {
+  font-size: 11px;
+  color: var(--mm-muted);
+  margin: 0 0 8px;
+  line-height: 1.5;
+}
 .mm-badge {
   font-size: 11.5px;
   font-weight: 500;
@@ -876,6 +882,9 @@ a {
   }
   .mm-goal-meta {
     font-size: 13px;
+  }
+  .mm-goal-note {
+    font-size: 12.5px;
   }
   .mm-goal-stats {
     padding: 14px 16px;

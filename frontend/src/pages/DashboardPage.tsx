@@ -84,6 +84,10 @@ export function DashboardPage() {
       {goals.map((goal, i) => {
         const pct = Math.round(goal.percentComplete);
         const color = goalColor(i);
+        // Saved so far only drops for "Yes, reduce" withdrawals, so it and
+        // Left to withdraw can diverge — this is exactly the gap made up of
+        // "No, keep" withdrawals (spent on the goal, progress untouched).
+        const keptWithdrawn = parseFloat(goal.savedSoFar) - parseFloat(goal.availableToWithdraw);
         return (
           <div className="mm-goal" key={goal.id}>
             <div className="mm-goal-top">
@@ -122,6 +126,12 @@ export function DashboardPage() {
                 <p className="mm-goal-stat-value tabular">{money(goal.availableToWithdraw)}</p>
               </div>
             </div>
+            {keptWithdrawn > 0.004 && (
+              <p className="mm-goal-note">
+                {money(keptWithdrawn)} of the {money(goal.totalWithdrawn)} withdrawn was spent on the goal itself, so it didn't reduce
+                progress.
+              </p>
+            )}
             <div className="mm-goal-meta" style={{ marginBottom: goal.accomplished || goals.length > 1 ? 10 : 0 }}>
               <span>
                 {goal.targetDate && monthYear(goal.targetDate)}

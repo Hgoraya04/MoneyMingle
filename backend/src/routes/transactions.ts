@@ -4,10 +4,16 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../lib/prisma.js";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { asyncHandler } from "../lib/asyncHandler.js";
-import { savedSoFarForGoal } from "../lib/calculations.js";
+import { availableToWithdrawForGoal } from "../lib/calculations.js";
 
 export const transactionsRouter = Router();
 transactionsRouter.use(requireAuth);
+
+function insufficientFundsMessage(goalName: string, available: Prisma.Decimal): string {
+  return available.lessThanOrEqualTo(0)
+    ? `${goalName} doesn't have any money left to withdraw.`
+    : `Only $${available.toFixed(2)} available in ${goalName}.`;
+}
 
 transactionsRouter.get(
   "/",
@@ -95,10 +101,10 @@ transactionsRouter.post(
     }
 
     for (const line of lines) {
-      const available = await savedSoFarForGoal(userId, line.goalId);
+      const available = await availableToWithdrawForGoal(userId, line.goalId);
       if (new Prisma.Decimal(line.amount).greaterThan(available)) {
         const goal = goals.find((g) => g.id === line.goalId)!;
-        return res.status(400).json({ error: `Only $${available.toFixed(2)} available in ${goal.name}.` });
+        return res.status(400).json({ error: insufficientFundsMessage(goal.name, available) });
       }
     }
 
@@ -154,9 +160,9 @@ transactionsRouter.post(
     if (!account) return res.status(404).json({ error: "Account not found." });
     if (!fromGoal || !toGoal) return res.status(404).json({ error: "One of those goals wasn't found." });
 
-    const available = await savedSoFarForGoal(userId, fromGoalId);
+    const available = await availableToWithdrawForGoal(userId, fromGoalId);
     if (new Prisma.Decimal(amount).greaterThan(available)) {
-      return res.status(400).json({ error: `Only $${available.toFixed(2)} available in ${fromGoal.name}.` });
+      return res.status(400).json({ error: insufficientFundsMessage(fromGoal.name, available) });
     }
 
     const suffix = description ? ` — ${description}` : "";

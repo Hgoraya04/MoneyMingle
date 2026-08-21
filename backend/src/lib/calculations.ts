@@ -11,6 +11,7 @@ export type GoalSummary = {
   targetDate: Date | null;
   accomplished: boolean;
   savedSoFar: Prisma.Decimal;
+  availableToWithdraw: Prisma.Decimal;
   remaining: Prisma.Decimal;
   percentComplete: number;
   monthsLeft: number | null;
@@ -46,6 +47,27 @@ export async function savedSoFarForGoal(userId: string, goalId: string): Promise
   return (deposits._sum.amount ?? ZERO).minus(reducingWithdrawals._sum.amount ?? ZERO);
 }
 
+/**
+ * How much actual cash is still sitting there for this goal, unspent — this is
+ * the real ceiling on how much you can withdraw next, and it's DIFFERENT from
+ * savedSoFar: every withdrawal counts here regardless of reduceGoalAmount,
+ * because the money physically leaves either way. A reduceGoalAmount = false
+ * withdrawal only protects progress; it doesn't reprint the cash.
+ */
+export async function availableToWithdrawForGoal(userId: string, goalId: string): Promise<Prisma.Decimal> {
+  const [deposits, withdrawals] = await Promise.all([
+    prisma.transaction.aggregate({
+      where: { userId, goalId, type: "DEPOSIT" },
+      _sum: { amount: true },
+    }),
+    prisma.transaction.aggregate({
+      where: { userId, goalId, type: "WITHDRAWAL" },
+      _sum: { amount: true },
+    }),
+  ]);
+  return (deposits._sum.amount ?? ZERO).minus(withdrawals._sum.amount ?? ZERO);
+}
+
 export async function getDashboard(userId: string) {
   const [goals, accounts, byGoal, byGoalAccount] = await Promise.all([
     prisma.goal.findMany({ where: { userId }, orderBy: { createdAt: "asc" } }),
@@ -63,13 +85,24 @@ export async function getDashboard(userId: string) {
   ]);
 
   const savedSoFarByGoal = new Map<string, Prisma.Decimal>();
+  const availableToWithdrawByGoal = new Map<string, Prisma.Decimal>();
   for (const row of byGoal) {
     const sum = row._sum.amount ?? ZERO;
-    const current = savedSoFarByGoal.get(row.goalId) ?? ZERO;
+
+    const saved = savedSoFarByGoal.get(row.goalId) ?? ZERO;
     if (row.type === "DEPOSIT") {
-      savedSoFarByGoal.set(row.goalId, current.plus(sum));
+      savedSoFarByGoal.set(row.goalId, saved.plus(sum));
     } else if (row.type === "WITHDRAWAL" && row.reduceGoalAmount === true) {
-      savedSoFarByGoal.set(row.goalId, current.minus(sum));
+      savedSoFarByGoal.set(row.goalId, saved.minus(sum));
+    }
+
+    // Unlike savedSoFar, every withdrawal counts here regardless of
+    // reduceGoalAmount — the cash leaves the goal's pool either way.
+    const cash = availableToWithdrawByGoal.get(row.goalId) ?? ZERO;
+    if (row.type === "DEPOSIT") {
+      availableToWithdrawByGoal.set(row.goalId, cash.plus(sum));
+    } else if (row.type === "WITHDRAWAL") {
+      availableToWithdrawByGoal.set(row.goalId, cash.minus(sum));
     }
   }
 
@@ -109,6 +142,7 @@ export async function getDashboard(userId: string) {
       targetDate: goal.targetDate,
       accomplished: goal.accomplished,
       savedSoFar,
+      availableToWithdraw: availableToWithdrawByGoal.get(goal.id) ?? ZERO,
       remaining,
       percentComplete,
       monthsLeft,

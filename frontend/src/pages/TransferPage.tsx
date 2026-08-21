@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api, ApiError } from "../lib/api";
-import { money } from "../lib/format";
+import { money, insufficientFundsMessage } from "../lib/format";
 import type { AccountSummary, Dashboard, GoalSummary } from "../lib/types";
 
 function todayISO(): string {
@@ -45,7 +45,15 @@ export function TransferPage() {
     });
   }, [presetFromGoalId]);
 
+  // The cap on what can physically move out of fromGoal — actual cash still
+  // sitting there, unspent.
   function available(goalId: string): number {
+    return parseFloat(goals.find((g) => g.id === goalId)?.availableToWithdraw ?? "0");
+  }
+
+  // Progress toward each goal's target — a reallocation always moves this,
+  // on both the source and destination side.
+  function savedSoFar(goalId: string): number {
     return parseFloat(goals.find((g) => g.id === goalId)?.savedSoFar ?? "0");
   }
 
@@ -66,7 +74,7 @@ export function TransferPage() {
       return;
     }
     if (amt > available(fromGoalId)) {
-      setError(`Only ${money(available(fromGoalId))} available in ${goalName(fromGoalId)}.`);
+      setError(insufficientFundsMessage(goalName(fromGoalId), available(fromGoalId)));
       return;
     }
 
@@ -81,8 +89,8 @@ export function TransferPage() {
         description,
       });
       setDone(
-        `Logged — ${goalName(fromGoalId)} reduced to ${money(available(fromGoalId) - amt)}, ${goalName(toGoalId)} increased to ${money(
-          available(toGoalId) + amt
+        `Logged — ${goalName(fromGoalId)} reduced to ${money(savedSoFar(fromGoalId) - amt)}, ${goalName(toGoalId)} increased to ${money(
+          savedSoFar(toGoalId) + amt
         )}.`
       );
     } catch (err) {
@@ -111,7 +119,7 @@ export function TransferPage() {
           ))}
         </select>
         <p style={{ fontSize: 11, color: "var(--mm-muted)", margin: "5px 0 0" }}>
-          {money(available(fromGoalId))} available in {goalName(fromGoalId)}
+          {available(fromGoalId) > 0 ? `${money(available(fromGoalId))} available in ${goalName(fromGoalId)}` : `${goalName(fromGoalId)} has no money left to transfer`}
         </p>
       </div>
 

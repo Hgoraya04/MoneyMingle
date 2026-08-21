@@ -13,3 +13,7 @@ export function monthYear(iso: string | null): string | null {
 export function shortDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, { month: "short", day: "numeric", timeZone: "UTC" });
 }
+
+export function insufficientFundsMessage(goalName: string, available: number): string {
+  return available <= 0 ? `${goalName} doesn't have any money left to withdraw.` : `Only ${money(available)} available in ${goalName}.`;
+}

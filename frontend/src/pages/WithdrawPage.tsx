@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { api, ApiError } from "../lib/api";
-import { money } from "../lib/format";
+import { money, insufficientFundsMessage } from "../lib/format";
 import type { AccountSummary, Dashboard, GoalSummary } from "../lib/types";
 
 type Line = { goalId: string; amount: string; reduceGoalAmount: boolean | null };
@@ -48,7 +48,7 @@ export function WithdrawPage() {
           ? [
               {
                 goalId: firstGoal.id,
-                amount: preset ? preset.savedSoFar : "",
+                amount: preset ? preset.availableToWithdraw : "",
                 reduceGoalAmount: preset ? false : null,
               },
             ]
@@ -58,7 +58,14 @@ export function WithdrawPage() {
     });
   }, [presetGoalId]);
 
+  // The cap on what can physically be withdrawn — actual cash still sitting
+  // there, unspent. Different from progress: see savedSoFar below.
   function available(goalId: string): number {
+    return parseFloat(goals.find((g) => g.id === goalId)?.availableToWithdraw ?? "0");
+  }
+
+  // Progress toward the goal's target — only moves when reduceGoalAmount is true.
+  function savedSoFar(goalId: string): number {
     return parseFloat(goals.find((g) => g.id === goalId)?.savedSoFar ?? "0");
   }
 
@@ -102,7 +109,7 @@ export function WithdrawPage() {
     lines.forEach((line, i) => {
       const amt = parseFloat(line.amount) || 0;
       if (amt <= 0) errors[i] = "Enter an amount greater than zero.";
-      else if (amt > available(line.goalId)) errors[i] = `Only ${money(available(line.goalId))} available in ${goalName(line.goalId)}.`;
+      else if (amt > available(line.goalId)) errors[i] = insufficientFundsMessage(goalName(line.goalId), available(line.goalId));
       else if (line.reduceGoalAmount === null) errors[i] = `Choose Yes or No for ${goalName(line.goalId)}.`;
     });
     if (Object.keys(errors).length > 0) {
@@ -126,8 +133,8 @@ export function WithdrawPage() {
       const summary = lines
         .map((l) =>
           l.reduceGoalAmount
-            ? `${goalName(l.goalId)} reduced to ${money(available(l.goalId) - (parseFloat(l.amount) || 0))}`
-            : `${goalName(l.goalId)} stays at ${money(available(l.goalId))}`
+            ? `${goalName(l.goalId)} reduced to ${money(savedSoFar(l.goalId) - (parseFloat(l.amount) || 0))}`
+            : `${goalName(l.goalId)} stays at ${money(savedSoFar(l.goalId))}`
         )
         .join(". ");
       setDone(`Logged — ${summary}.`);
@@ -206,7 +213,7 @@ export function WithdrawPage() {
             )}
           </div>
           <p style={{ fontSize: 11, color: "var(--mm-muted)", margin: "5px 0 8px" }}>
-            {money(available(line.goalId))} available in {goalName(line.goalId)}
+            {available(line.goalId) > 0 ? `${money(available(line.goalId))} available in ${goalName(line.goalId)}` : `${goalName(line.goalId)} has no money left to withdraw`}
           </p>
           <div style={{ display: "flex", gap: 6 }}>
             <button

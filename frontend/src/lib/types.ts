@@ -34,6 +34,7 @@ export type GoalSummary = {
   targetDate: string | null;
   accomplished: boolean;
   savedSoFar: string;
+  availableToWithdraw: string;
   remaining: string;
   percentComplete: number;
   monthsLeft: number | null;

@@ -145,14 +145,28 @@ export function DashboardPage() {
                   Withdraw funds
                 </button>
               )}
-              {goals.length > 1 && (
-                <Link to={`/transfer?fromGoalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
-                  <svg className="icon" style={{ width: 13, height: 13 }}>
-                    <use href="#i-exchange" />
-                  </svg>
-                  Transfer to another goal
-                </Link>
-              )}
+              {goals.length > 1 &&
+                (canWithdraw ? (
+                  <Link to={`/transfer?fromGoalId=${goal.id}`} className="mm-ghostbtn" style={{ width: "fit-content", textDecoration: "none" }}>
+                    <svg className="icon" style={{ width: 13, height: 13 }}>
+                      <use href="#i-exchange" />
+                    </svg>
+                    Transfer to another goal
+                  </Link>
+                ) : (
+                  <button
+                    type="button"
+                    className="mm-ghostbtn"
+                    disabled
+                    title="No more available to withdraw"
+                    style={{ width: "fit-content" }}
+                  >
+                    <svg className="icon" style={{ width: 13, height: 13 }}>
+                      <use href="#i-exchange" />
+                    </svg>
+                    Transfer to another goal
+                  </button>
+                ))}
             </div>
           </div>
         );
